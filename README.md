@@ -88,4 +88,26 @@ Future<String> _writeByteToImageFile(ByteData byteData) async {
   return imageFile.path;
 }
 
+
+
+///截图分享
+  RenderRepaintBoundary boundary =
+      rootWidgetKey.currentContext.findRenderObject();
+      var image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      Directory tempDir = await getTemporaryDirectory();
+
+      String storagePath = tempDir.path;
+      File file = new File('$storagePath/invite.png');
+
+      if (!file.existsSync()) {
+        file.createSync();
+      }
+      file.writeAsBytesSync(pngBytes);
+
+      ShareExtend.share(file.path, "image", sharePanelTitle: "分享到");
+
+
 ```
